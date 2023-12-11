@@ -11,6 +11,8 @@
 
 class QTimer;
 
+static QMutex mutex;
+static QWaitCondition waitCondition;
 
 namespace Ui {
 class MainWindow;
@@ -22,7 +24,7 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
-    bool is_playing = true; // 웹캠 동작 중
+    bool is_playing = true;     // 웹캠 동작 중
     ~MainWindow();
 
 public slots:
@@ -36,10 +38,6 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QTimer* DataTimer;
-    int linesProcessed; // 처리 중인 라인
-    int frameProcessed;  // 처리 중인 프레임
-    int objsize;
-
     void setupGraph();
 };
 
@@ -52,18 +50,14 @@ signals:
     void Frame_Ready(cv::Mat &frame);        // signal을 선언하고 emit를 통해 시그널 발생
 private:
     // start() 호출 전까지는 시작 X, start() 호출 시 run()함수 동작
+    QMutex mutex;
+    cv::Mat frame;
     bool video_stop;
     bool video_pause;
-    // pause상태 시 blocking
     QWaitCondition video_pauseCondition;
 
+
 public:
-    QMutex mutex;
-
-//    // 생성자
-//    VideoThread(bool v=false): video_stop{v}{}
-//    ~VideoThread(){}    // 소멸자
-
     void pause();
     void resume();
     void stop();
@@ -74,20 +68,20 @@ public:
 class ProcessingThread: public QThread
 {
     Q_OBJECT
+//protected:
+//    void run() override;
 public slots:
-    void ProcessFrame(cv::Mat &frame);
+    void setFrame( cv::Mat &frame);
+//    void ProcessFrame(cv::Mat &frame);
 signals:
     void ProcessingResult(cv::Mat &frame, cv::Mat &subframe);
     void ObjSizeResult(int objsize);
 private:
     bool processing_stop;
     bool is_playing = true;
-    ProcessingThread* processing;  // processing 객체에 대한 포인터
+    cv::Mat Temp_frame;
 public:
-//    ProcessingThread(){}
-    ~ProcessingThread(){}
-    QMutex mutex;
-
+    void run();
 };
 
 #endif // MAINWINDOW_H

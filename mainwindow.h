@@ -38,6 +38,7 @@ private:
     QTimer* DataTimer;
     int linesProcessed; // 처리 중인 라인
     int frameProcessed;  // 처리 중인 프레임
+    int objsize;
 
     void setupGraph();
 };

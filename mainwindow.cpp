@@ -63,13 +63,11 @@ void MainWindow::showFrame(cv::Mat &frame, cv::Mat &subframe) {
 
 void MainWindow::on_pushButton_Start_clicked()
 {
-    // DataTimer->start(100);   // data가 시간일 때때
     is_playing = true;
 }
 
 void MainWindow::on_pushButton_Stop_clicked()
 {
-    // DataTimer->stop();
     is_playing = false;
 }
 

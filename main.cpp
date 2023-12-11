@@ -61,8 +61,6 @@ int detectAndDrawObjects(cv::Mat& subframe, cv::Mat& frame) {
     return sum_object_size;
 }
 
-
-
 int main(int argc, char *argv[])
 {
     // 메타 데이터 등록 QT에 등록되어 있지 않음
